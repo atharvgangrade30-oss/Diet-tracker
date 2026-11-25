@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#176b55"><title>Daily Diet & Macro Tracker</title>
+<style>
+:root{--g:#176b55;--pale:#eaf5f0;--ink:#18332b;--muted:#65766f;--line:#e2eae6;--bg:#f5f8f6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--g);color:#fff;padding:22px 18px 25px;border-radius:0 0 23px 23px}.wrap{max-width:780px;margin:auto;padding:0 15px}
+h1{font-size:23px;margin:0 0 4px}header p{margin:0;color:#d9eee6}main{padding:17px 0 38px}
+.card,.datebar{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px}
+.datebar{display:flex;align-items:center;justify-content:space-between;gap:10px}.datebar input{border:0;font:inherit;font-weight:650;color:var(--ink)}
+h2{font-size:17px;margin:0 0 13px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:13px}
+.stat{background:var(--pale);border-radius:14px;padding:13px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:23px;margin-top:3px}
+.macrogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 13px}
+.macro{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px}.macro b{display:block;font-size:19px}.macro small{color:var(--muted)}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 5px}input,select,button{font:inherit}
+input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.field{margin-bottom:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.wide{grid-column:1/-1}
+button{border:0;border-radius:10px;padding:11px 14px;background:var(--g);color:#fff;font-weight:650;cursor:pointer}
+button.secondary{background:var(--pale);color:var(--g)}button.danger{background:#fff0ef;color:#a8322b;padding:7px 9px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.hint{font-size:12px;line-height:1.5;color:var(--muted)}
+.foodrow{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.foodrow:last-child{border:0}.foodrow small{display:block;color:var(--muted);margin-top:3px}.foodright{text-align:right;white-space:nowrap}.foodright b{display:block}
+.mealhead{font-size:14px;color:var(--g);margin:15px 0 2px}.empty{text-align:center;color:var(--muted);padding:18px 5px}
+.inline{display:flex;align-items:center;gap:8px}.inline input{max-width:130px}.meter{height:8px;background:#dcebe4;border-radius:20px;overflow:hidden;margin-top:8px}.meter span{display:block;height:100%;background:#35a47c;width:0}
+#search{margin-bottom:10px}.hidden{display:none}footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
+@media(max-width:420px){.macro{padding:10px}.macro b{font-size:17px}.row{gap:8px}}
+</style></head>
+<body>
+<header><div class="wrap"><h1>🥗 Daily Diet & Macro Tracker</h1><p>Track calories, protein, fat and carbs in every meal</p></div></header>
+<main class="wrap">
+<div class="datebar"><strong>Diary date</strong><input id="date" type="date"></div>
+<div class="stats"><div class="stat"><small>Calories eaten</small><strong id="total">0 kcal</strong><small id="count">0 food entries</small></div><div class="stat"><small>Daily calorie goal</small><strong id="goalLabel">2,000 kcal</strong><div class="meter"><span id="progress"></span></div></div></div>
+<div class="macrogrid">
+ <div class="macro"><small>Protein</small><b id="protein">0 g</b><small id="proteinGoalText">Goal: 100 g</small></div>
+ <div class="macro"><small>Fat</small><b id="fat">0 g</b><small id="fatGoalText">Goal: 65 g</small></div>
+ <div class="macro"><small>Carbs</small><b id="carbs">0 g</b><small id="carbGoalText">Goal: 250 g</small></div>
+</div>
+<section class="card"><h2>Daily targets</h2><div class="row">
+<div class="field"><label>Calories (kcal)</label><input id="goal" type="number" min="1" value="2000"></div>
+<div class="field"><label>Protein (g)</label><input id="pgoal" type="number" min="0" value="100"></div>
+<div class="field"><label>Fat (g)</label><input id="fgoal" type="number" min="0" value="65"></div>
+<div class="field"><label>Carbs (g)</label><input id="cgoal" type="number" min="0" value="250"></div></div><button id="saveGoals">Save targets</button><p class="hint">Targets are editable examples, not a personalised medical or nutrition prescription.</p></section>
+<section class="card"><h2>＋ Add food to your diary</h2>
+<div class="row">
+<div class="field"><label>Meal</label><select id="meal"><option>Breakfast</option><option>Lunch</option><option>Snacks</option><option>Dinner</option><option>Other</option></select></div>
+<div class="field"><label>Food category</label><select id="category"><option value="all">All foods</option><option>Indian meals</option><option>Grains & breads</option><option>Dairy & eggs</option><option>Meat & seafood</option><option>Legumes & soy</option><option>Fruits</option><option>Vegetables</option><option>Nuts & seeds</option><option>Snacks & others</option></select></div>
+</div>
+<div class="field"><label>Search food</label><input id="search" placeholder="Type e.g. paneer, rice, apple, chicken..."></div>
+<div class="field"><label>Choose food</label><select id="food"></select></div>
+<div class="row"><div class="field"><label>Quantity (grams)</label><input id="qty" type="number" min="1" value="100"></div><div class="field"><label>Calculated nutrition</label><input id="preview" readonly value="0 kcal · P 0g · F 0g"></div></div>
+<button id="add">Add food to diary</button> <button class="secondary" id="customToggle">＋ Create custom food</button>
+<div id="customBox" class="hidden" style="margin-top:15px;border-top:1px solid var(--line);padding-top:14px">
+<h2>Custom food nutrition (per 100 g)</h2><div class="field"><label>Food name</label><input id="customName" placeholder="e.g. Homemade vegetable pulao"></div>
+<div class="row"><div class="field"><label>Calories (kcal)</label><input id="ck" type="number" min="0"></div><div class="field"><label>Protein (g)</label><input id="cp" type="number" min="0" step=".1"></div><div class="field"><label>Fat (g)</label><input id="cf" type="number" min="0" step=".1"></div><div class="field"><label>Carbs (g)</label><input id="cc" type="number" min="0" step=".1"></div></div><button id="saveCustom">Save custom food</button></div>
+<p class="hint">Database values are approximate averages per 100 g. Recipes, brands, cooking oil and portion sizes can change nutrition significantly. For packaged foods, use the label where possible.</p>
+</section>
+<section class="card"><h2>Food diary</h2><div id="log"></div></section>
+<section class="card"><h2>History & backup</h2><div class="actions"><button class="secondary" id="export">Export all diary data (CSV)</button><button class="danger" id="clear">Clear selected day</button></div><p class="hint">Entries are stored locally in this browser on this device. Export a backup regularly; browser data clearing may erase the diary.</p></section>
+<footer>Free · No account · Saved on your device</footer>
+</main>
+<script>
+// Approximate nutrition per 100 g: [name, kcal, protein, fat, carbs, category]
+const base=[
+["Rice, white, cooked",130,2.7,.3,28.2,"Grains & breads"],["Brown rice, cooked",123,2.7,1,25.6,"Grains & breads"],["Roti / chapati",297,9,7,46,"Grains & breads"],["Whole wheat bread",247,13,4.2,41,"Grains & breads"],["White bread",266,8.9,3.2,49,"Grains & breads"],["Oats, dry",389,16.9,6.9,66.3,"Grains & breads"],["Poha, prepared",130,2.5,3,23,"Indian meals"],["Upma, prepared",150,4,5,23,"Indian meals"],["Idli",146,4.5,.7,30,"Indian meals"],["Dosa, plain",168,4,4,28,"Indian meals"],["Paratha",300,7,13,38,"Indian meals"],["Aloo paratha",260,6,10,36,"Indian meals"],["Dal, cooked",116,9,4,14,"Indian meals"],["Rajma curry",127,8.7,4.5,15,"Indian meals"],["Chole / chickpea curry",160,8,6,20,"Indian meals"],["Khichdi",120,4,3,19,"Indian meals"],["Vegetable pulao",150,3,4,25,"Indian meals"],["Chicken biryani",180,9,7,20,"Indian meals"],["Sambar",60,3,2,8,"Indian meals"],
+["Milk, whole",61,3.2,3.3,4.8,"Dairy & eggs"],["Milk, toned",58,3,3,4.8,"Dairy & eggs"],["Curd / plain yogurt",98,3.5,4.3,11.5,"Dairy & eggs"],["Greek yogurt, plain",97,9,5,3.9,"Dairy & eggs"],["Paneer",265,18.3,20.8,1.2,"Dairy & eggs"],["Cheese, cheddar",403,25,33,1.3,"Dairy & eggs"],["Egg, whole",143,12.6,9.5,.7,"Dairy & eggs"],["Egg white",52,10.9,.2,.7,"Dairy & eggs"],["Butter",717,.9,81,.1,"Dairy & eggs"],
+["Chicken breast, cooked",165,31,3.6,0,"Meat & seafood"],["Chicken thigh, cooked",209,26,10.9,0,"Meat & seafood"],["Mutton, cooked",294,25,21,0,"Meat & seafood"],["Fish, rohu cooked",120,22,4,0,"Meat & seafood"],["Tuna, canned",116,25.5,.8,0,"Meat & seafood"],["Prawns, cooked",99,24,.3,0.2,"Meat & seafood"],
+["Chickpeas, boiled",164,8.9,2.6,27.4,"Legumes & soy"],["Lentils, cooked",116,9,0.4,20.1,"Legumes & soy"],["Moong dal, cooked",105,7,0.4,19,"Legumes & soy"],["Soy chunks, dry",345,52,0.5,33,"Legumes & soy"],["Tofu",76,8,4.8,1.9,"Legumes & soy"],["Peas, cooked",84,5.4,.4,15,"Legumes & soy"],
+["Banana",89,1.1,.3,22.8,"Fruits"],["Apple",52,.3,.2,13.8,"Fruits"],["Orange",47,.9,.1,11.8,"Fruits"],["Mango",60,.8,.4,15,"Fruits"],["Papaya",43,.5,.3,10.8,"Fruits"],["Watermelon",30,.6,.2,7.6,"Fruits"],["Grapes",69,.7,.2,18.1,"Fruits"],["Guava",68,2.6,1,14.3,"Fruits"],["Pomegranate",83,1.7,1.2,18.7,"Fruits"],
+["Potato, boiled",87,1.9,.1,20.1,"Vegetables"],["Sweet potato, boiled",76,1.4,.1,17.7,"Vegetables"],["Cucumber",15,.7,.1,3.6,"Vegetables"],["Tomato",18,.9,.2,3.9,"Vegetables"],["Carrot",41,.9,.2,9.6,"Vegetables"],["Spinach",23,2.9,.4,3.6,"Vegetables"],["Broccoli",34,2.8,.4,6.6,"Vegetables"],["Cauliflower",25,1.9,.3,5,"Vegetables"],["Onion",40,1.1,.1,9.3,"Vegetables"],["Capsicum",31,1,.3,6,"Vegetables"],
+["Almonds",579,21.2,49.9,21.6,"Nuts & seeds"],["Peanuts",567,25.8,49.2,16.1,"Nuts & seeds"],["Cashews",553,18.2,43.9,30.2,"Nuts & seeds"],["Walnuts",654,15.2,65.2,13.7,"Nuts & seeds"],["Chia seeds",486,16.5,30.7,42.1,"Nuts & seeds"],["Flax seeds",534,18.3,42.2,28.9,"Nuts & seeds"],["Pumpkin seeds",559,30.2,49.1,10.7,"Nuts & seeds"],
+["Samosa",308,6,18,32,"Snacks & others"],["Pakora",280,6,18,24,"Snacks & others"],["Biscuit, plain",450,7,14,72,"Snacks & others"],["Dark chocolate",598,7.8,42.6,45.9,"Snacks & others"],["Potato chips",536,7,34,53,"Snacks & others"],["Sugar",387,0,0,100,"Snacks & others"],["Honey",304,.3,0,82.4,"Snacks & others"],["Cooking oil",884,0,100,0,"Snacks & others"],["Peanut butter",588,25,50,20,"Nuts & seeds"],["Whey protein powder",400,80,6,8,"Snacks & others"]
+];
+// Fix numeric entries for dishes where generic estimates are used.
+base.forEach(f=>{if(typeof f[1]!=="number"||!Number.isFinite(f[1])){f[1]=100;f[2]=4;f[3]=3;f[4]=15}});
+const $=id=>document.getElementById(id),key=d=>"dietlog_"+d;
+const now=new Date();$("date").value=new Date(now-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
+let custom=JSON.parse(localStorage.getItem("diet_custom_v2")||"[]");
+let targets=JSON.parse(localStorage.getItem("diet_targets_v2")||'{"k":2000,"p":100,"f":65,"c":250}');
+function foods(){return [...base,...custom]}
+function entries(){return JSON.parse(localStorage.getItem(key($("date").value))||"[]")}
+function save(a){localStorage.setItem(key($("date").value),JSON.stringify(a));render()}
+function fmt(n){return (Math.round(n*10)/10).toLocaleString(undefined,{maximumFractionDigits:1})}
+function populate(){let cat=$("category").value,term=$("search").value.toLowerCase();let list=foods().map((f,i)=>({f,i})).filter(x=>(cat==="all"||x.f[5]===cat)&&x.f[0].toLowerCase().includes(term));$("food").innerHTML="";list.forEach(x=>{let o=document.createElement("option");o.value=x.i;o.textContent=`${x.f[0]} · ${x.f[1]} kcal/100g`; $("food").append(o)});preview()}
+function selected(){return foods()[Number($("food").value)]}
+function preview(){let f=selected(),q=Number($("qty").value)||0;if(!f){$("preview").value="No food selected";return}$("preview").value=`${fmt(f[1]*q/100)} kcal · P ${fmt(f[2]*q/100)}g · F ${fmt(f[3]*q/100)}g`}
+function setTargets(){["k","p","f","c"].forEach((x,i)=>$(["goal","pgoal","fgoal","cgoal"][i]).value=targets[x])}
+function render(){let a=entries(),sum={k:0,p:0,f:0,c:0};a.forEach(e=>{sum.k+=e.k;sum.p+=e.p;sum.f+=e.f;sum.c+=e.c});$("total").textContent=fmt(sum.k)+" kcal";$("count").textContent=a.length+" food entries";$("protein").textContent=fmt(sum.p)+" g";$("fat").textContent=fmt(sum.f)+" g";$("carbs").textContent=fmt(sum.c)+" g";$("goalLabel").textContent=fmt(targets.k)+" kcal";$("progress").style.width=Math.min(100,sum.k/targets.k*100)+"%";$("proteinGoalText").textContent="Goal: "+targets.p+" g";$("fatGoalText").textContent="Goal: "+targets.f+" g";$("carbGoalText").textContent="Goal: "+targets.c+" g";
+let log=$("log");log.innerHTML="";if(!a.length){log.innerHTML='<div class="empty">No food recorded for this date. Add your first meal above.</div>';return}
+["Breakfast","Lunch","Snacks","Dinner","Other"].forEach(meal=>{a.map((e,i)=>({...e,i})).filter(e=>e.meal===meal).forEach((e,j,arr)=>{if(j===0){let h=document.createElement("div");h.className="mealhead";h.textContent=meal;log.append(h)}let d=document.createElement("div");d.className="foodrow";let l=document.createElement("div");l.textContent=e.name;let sm=document.createElement("small");sm.textContent=`${e.qty} g · Protein ${fmt(e.p)} g · Fat ${fmt(e.f)} g · Carbs ${fmt(e.c)} g`;l.append(sm);let r=document.createElement("div");r.className="foodright";let b=document.createElement("b");b.textContent=fmt(e.k)+" kcal";let del=document.createElement("button");del.className="danger";del.textContent="Remove";del.onclick=()=>{let n=entries();n.splice(e.i,1);save(n)};r.append(b,del);d.append(l,r);log.append(d)})})}
+$("category").onchange=populate;$("search").oninput=populate;$("food").onchange=preview;$("qty").oninput=preview;$("date").onchange=render;
+$("add").onclick=()=>{let f=selected(),q=Number($("qty").value);if(!f||q<=0){alert("Choose a food and enter a valid gram quantity.");return}let a=entries();a.push({meal:$("meal").value,name:f[0],qty:q,k:Math.round(f[1]*q/100*10)/10,p:Math.round(f[2]*q/100*10)/10,f:Math.round(f[3]*q/100*10)/10,c:Math.round(f[4]*q/100*10)/10});save(a)};
+$("saveGoals").onclick=()=>{targets={k:Number($("goal").value),p:Number($("pgoal").value),f:Number($("fgoal").value),c:Number($("cgoal").value)};if(targets.k<=0||Object.values(targets).some(x=>!Number.isFinite(x)||x<0)){alert("Enter valid daily targets.");return}localStorage.setItem("diet_targets_v2",JSON.stringify(targets));render()};
+$("customToggle").onclick=()=>$("customBox").classList.toggle("hidden");
+$("saveCustom").onclick=()=>{let name=$("customName").value.trim(),v=["ck","cp","cf","cc"].map(id=>Number($(id).value));if(!name||v.some(x=>!Number.isFinite(x)||x<0)){alert("Enter a name and all four nutrition values.");return}custom.push([name,...v,"Custom"]);localStorage.setItem("diet_custom_v2",JSON.stringify(custom));$("customName").value="";["ck","cp","cf","cc"].forEach(id=>$(id).value="");populate();$("food").value=foods().length-1;preview();alert("Custom food saved.")};
+$("clear").onclick=()=>{if(confirm("Clear all food entries for "+$("date").value+"?")){localStorage.removeItem(key($("date").value));render()}};
+$("export").onclick=()=>{let rows=[["Date","Meal","Food","Quantity g","Calories kcal","Protein g","Fat g","Carbs g"]];Object.keys(localStorage).filter(k=>k.startsWith("dietlog_")).sort().forEach(k=>{try{JSON.parse(localStorage.getItem(k)).forEach(e=>rows.push([k.slice(8),e.meal,e.name,e.qty,e.k,e.p,e.f,e.c]))}catch(_){}});let csv=rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(",")).join("\n");let u=URL.createObjectURL(new Blob([csv],{type:"text/csv"})),a=document.createElement("a");a.href=u;a.download="diet-macro-diary.csv";a.click();URL.revokeObjectURL(u)};
+setTargets();populate();render();
+</script></body></html>
